@@ -1,5 +1,5 @@
 class SleepRecordsController < ApplicationController
-    before_action :authenticate_user, only: [:index, :clock_in, :clock_out] # required to login
+    before_action :authenticate_user # required to login
 
     def index
         # get sleep records from current/logged user
@@ -10,17 +10,9 @@ class SleepRecordsController < ApplicationController
                                     )
 
         render json: {
-            data: sleep_records,
+            data: ActiveModelSerializers::SerializableResource.new(sleep_records, each_serializer: SelfSleepRecordSerializer),
             meta: pagination_meta(pagination)
         }
-    end
-
-    # GET /users/:user_id/sleep_records
-    def user_sleep_records
-        sleep_records = SleepRecord.where(user_id: params[:user_id])
-                                   .order(created_at: :desc)
-
-        render json: sleep_records
     end
 
     def clock_in
@@ -60,4 +52,48 @@ class SleepRecordsController < ApplicationController
         end
     end
     
+    def followings_records
+        from_date = parse_date(params[:from]) || 1.week.ago.beginning_of_day # default to one week ago
+        to_date = parse_date(params[:to]) || Date.today.end_of_day # default to at yesterday
+
+        # check params
+        return render json: { error: "`from` must be before `to`" }, status: :unprocessable_entity if from_date > to_date
+
+        # get all following user_id
+        following_ids = current_user.followings.pluck(:id) # returns user.id
+
+        sleep_records = SleepRecord.includes(:user)
+                            .where(user_id: following_ids)
+                            .where(clocked_out_at: from_date..to_date)
+                            .select("
+                            sleep_records.*,
+                            ROUND(
+                                (strftime('%s', clocked_out_at) - strftime('%s', clocked_in_at)) / 3600.0,
+                                2
+                            ) || ' hours' AS sleep_duration") # %s will convert in second and show in hours with 2 decimal places and add hours string on the end
+                            .order("sleep_duration DESC") # order from higher to lower
+
+        pagination, sleep_records = pagy(
+                                        sleep_records,
+                                        items: params[:per_page] || 10,
+                                        page: params[:page] || 1
+                                    )
+
+        render json: {
+            data: ActiveModelSerializers::SerializableResource.new(sleep_records, each_serializer: DetailSleepRecordSerializer),
+            meta: pagination_meta(pagination)
+        }
+    end
+
+    private
+
+    def followings_records_params
+        params.permit(:from, :to, :page, :per_page)
+    end
+
+    def parse_date(string_date)
+        return nil if string_date.blank?
+
+        Date.parse(string_date) rescue nil
+    end
 end

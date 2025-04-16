@@ -27,6 +27,8 @@ Rails.application.routes.draw do
     post 'clock_in'
     # /sleep_records/clock_out
     patch 'clock_out'
+    # /sleep_records/followings
+    get 'followings', to: 'followings_records'
   end
 
 end
