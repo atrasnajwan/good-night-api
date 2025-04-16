@@ -128,7 +128,9 @@ rails s                 # Run the server (default: development)
 - Database Indexing
     - Index on foreign key (followings.followed_id, followings.follower_id, sleep_records.user_id) (done)
     - Index on followings table to fast check unique records (done)
-- Add sleep_duration to new column since clocked_out_at is only once being updated (done)
+    - Index on `sleep_records.created_at` because it often being used
+    - Index on `user.created_at` because it often being used when fetch followers/followings
+- Add `sleep_duration` to new `sleep_records` table since `clocked_out_at` is only once being updated (done)
 - Using PostgreSQL to handle complex data relationships (e.g. users following other users, managing sleep records) and joins
 - Eager loading on some records (e.g. followings sleep records) (done)
 - Pagination (done)

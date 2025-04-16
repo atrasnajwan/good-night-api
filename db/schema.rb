@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_16_161040) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_16_171059) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,6 +31,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_16_161040) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "sleep_duration", precision: 10, scale: 2
+    t.index ["created_at"], name: "index_sleep_records_on_created_at"
     t.index ["user_id"], name: "index_sleep_records_on_user_id"
   end
 
@@ -38,6 +39,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_16_161040) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_users_on_created_at"
   end
 
   add_foreign_key "followings", "users", column: "followed_id"
