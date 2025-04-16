@@ -6,7 +6,7 @@ class SleepRecordsController < ApplicationController
         pagination, sleep_records = pagy(
                                         current_user.sleep_records.order(created_at: :desc),
                                         items: params[:per_page] || 10,
-                                        page: params[:per_page] || 1
+                                        page: params[:page] || 1
                                     )
 
         render json: {
