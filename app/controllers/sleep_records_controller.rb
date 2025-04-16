@@ -65,12 +65,6 @@ class SleepRecordsController < ApplicationController
         sleep_records = SleepRecord.includes(:user)
                             .where(user_id: following_ids)
                             .where(clocked_out_at: from_date..to_date)
-                            .select("
-                            sleep_records.*,
-                            ROUND(
-                                (strftime('%s', clocked_out_at) - strftime('%s', clocked_in_at)) / 3600.0,
-                                2
-                            ) || ' hours' AS sleep_duration") # %s will convert in second and show in hours with 2 decimal places and add hours string on the end
                             .order("sleep_duration DESC") # order from higher to lower
 
         pagination, sleep_records = pagy(

@@ -86,9 +86,10 @@ RSpec.describe SleepRecordsController, type: :request do
         patch "/sleep_records/clock_out", headers: headers # simulate http call
 
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)).to have_key('clocked_out_at') # check if clocked_out_at key is returned on the response
+        expect(JSON.parse(response.body)).to include('clocked_out_at', 'sleep_duration') # check if clocked_out_at and sleep_duration keys is returned on the response
       end
     end
+    
   end
 
 end

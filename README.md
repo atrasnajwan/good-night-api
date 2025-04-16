@@ -27,6 +27,7 @@ Tracks when a user clocks in and out for sleep.
 | user_id        | integer  | Foreign key to `users`                   |
 | clocked_in_at  | datetime | Time user went to sleep (Required)       |
 | clocked_out_at | datetime | Time user woke up (Nullable until clocked out) |
+| sleep_duration | decimal(10, 2) | Duration of sleep in hours |
 | created_at     | datetime | Record creation time                     |
 | updated_at     | datetime | Last update time                         |
 
@@ -99,6 +100,7 @@ Represents a follower-followed relationship between users.
     - Fails if there's an unfinished sleep record
 - **Clock Out**: Updates the latest sleep record by setting `clocked_out_at`
     - Fails if there's no active sleep record
+    - Will trigger callback to update `sleep_duration` column
 - **Followings Sleep Records**:
     - Can be filter by timeframe using `from` and `to` query parameters (default: last week from yesterday):
     ```
@@ -113,8 +115,8 @@ Represents a follower-followed relationship between users.
 ```bash
 bundle install          # Install dependencies
 
-rails db:create         # Create db, will follow the configuration on database.yml
 rails db:drop           # [AWARE] Drop db, will follow the configuration on database.yml
+rails db:create         # Create db, will follow the configuration on database.yml
 rails db:migrate        # Runs migrations
 rails db:seed           # Generate seed data
 bin/bundle exec rspec   # Run RSpec 
@@ -126,7 +128,7 @@ rails s                 # Run the server (default: development)
 - Database Indexing
     - Index on foreign key (followings.followed_id, followings.follower_id, sleep_records.user_id) (done)
     - Index on followings table to fast check unique records (done)
-- Add sleep duration to new column since clocked_out_at is only once being updated
+- Add sleep_duration to new column since clocked_out_at is only once being updated (done)
 - Using PostgreSQL to handle complex data relationships (e.g. users following other users, managing sleep records) and joins
 - Eager loading on some records (e.g. followings sleep records) (done)
 - Pagination (done)
