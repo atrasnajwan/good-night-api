@@ -8,4 +8,6 @@ class User < ActiveRecord::Base
     has_many :followings, through: :following_relationships, source: :followed
 
     has_many :sleep_records
+
+    validates :name, presence: true
 end
