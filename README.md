@@ -4,6 +4,58 @@ This app allows users to track when they go to bed and when they wake up. Users 
 
 See diagram [here](https://drive.google.com/file/d/1P-VDda2fN743ubPgNj_sBKheqnjpLOCA/view?usp=sharing)
 
+## Database
+
+### **Users**
+| Column      | Type     | Description           |
+|-------------|----------|-----------------------|
+| id          | integer  | Primary key           |
+| name        | string   | Required              |
+| created_at  | datetime | Record creation time  |
+| updated_at  | datetime | Last update time      |
+
+---
+
+### **SleepRecords**
+Tracks when a user clocks in and out for sleep.
+
+| Column         | Type     | Description                              |
+|----------------|----------|------------------------------------------|
+| id             | integer  | Primary key                              |
+| user_id        | integer  | Foreign key to `users`                   |
+| clocked_in_at  | datetime | Time user went to sleep (Required)       |
+| clocked_out_at | datetime | Time user woke up (Nullable until clocked out) |
+| created_at     | datetime | Record creation time                     |
+| updated_at     | datetime | Last update time                         |
+
+**Indexes**:
+- `index_sleep_records_on_user_id`
+
+**Foreign Keys**:
+- `user_id` -> `users(id)`
+
+---
+
+### **Followings**
+Represents a follower-followed relationship between users.
+
+| Column       | Type     | Description                    |
+|--------------|----------|--------------------------------|
+| id           | integer  | Primary key                    |
+| follower_id  | integer  | User who follows               |
+| followed_id  | integer  | User being followed            |
+| created_at   | datetime | Record creation time           |
+| updated_at   | datetime | Last update time               |
+
+**Indexes**:
+- `index_followings_on_followed_id` 
+- `index_followings_on_follower_id` 
+- `index_followings_on_followed_id_and_follower_id (unique)` 
+
+**Foreign Keys**:
+- `follower_id` -> `users(id)`
+- `followed_id` -> `users(id)`
+
 ## API Endpoints
 
 ### Authentication
@@ -54,8 +106,27 @@ See diagram [here](https://drive.google.com/file/d/1P-VDda2fN743ubPgNj_sBKheqnjp
 
 ---
 
-Let me know if you want to include example requests, response formats, or setup instructions.
-
+## List to Improve
+- Database Indexing
+    - Index on foreign key (followings.followed_id, followings.follower_id, sleep_records.user_id) (done)
+    - Index on followings table to fast check unique records (done)
+- Calculate sleep_records duration on DB level (done)
+- Using PostgreSQL to handle complex data relationships (e.g. users following other users, managing sleep records) and joins
+- Eager loading on some records (e.g. followings sleep records) (done)
+- Pagination (done)
+- Use serializer to show only desired attributes (done)
+- Add more test case
+- Use multithreading on Puma server
+- Caching using Redis for some endpoints
+- Backgound jobs using Sidekiq to calculate analytics or report if needed
+- Setup Docker for easier deployment on production/staging
+- Logging and monitoring system
+- CI on Github to automatic run test on PR
+- Scaling options
+    - Horizontal (add multiple server/instance)
+    - Vertical (increase size of the server/instance)
+    - Add load balancer
+    - Autoscaling if needed
 
 >Note:
 If you want to run on the production environment, ask the developer for `master.key`
