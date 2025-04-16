@@ -97,7 +97,7 @@ Represents a follower-followed relationship between users.
     - Fails if there's an unfinished sleep record
 - **Clock Out**: Updates the latest sleep record by setting `clocked_out_at`
     - Fails if there's no active sleep record
-- **Followings' Sleep Records**:
+- **Followings Sleep Records**:
     - Can be filter by timeframe using `from` and `to` query parameters (default: last week from yesterday):
     ```
     GET /sleep_records/followings?from=2025-04-01&to=2025-04-10
@@ -135,8 +135,8 @@ rails s                 # Run the server (default: development)
 - Logging and monitoring system
 - CI on Github to automatic run test on PR
 - Scaling options
-    - Horizontal (add multiple server/instance)
-    - Vertical (increase size of the server/instance)
+    - Horizontal (add multiple server/instance/DB if needed(master and slave approach))
+    - Vertical (increase size of the server/instance/DB if needed)
     - Add load balancer
     - Autoscaling if needed
 
