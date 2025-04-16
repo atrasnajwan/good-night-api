@@ -16,6 +16,9 @@ Make sure your PostgresSQL service is running and change the environment variabl
 | created_at  | datetime | Record creation time  |
 | updated_at  | datetime | Last update time      |
 
+**Indexes**:
+- `index_users_on_created_at`
+
 ---
 
 ### **SleepRecords**
@@ -33,6 +36,7 @@ Tracks when a user clocks in and out for sleep.
 
 **Indexes**:
 - `index_sleep_records_on_user_id`
+- `index_sleep_records_on_created_at`
 
 **Foreign Keys**:
 - `user_id` -> `users(id)`
