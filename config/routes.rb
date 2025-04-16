@@ -5,9 +5,18 @@ Rails.application.routes.draw do
   post '/login', to: 'sessions#login'
 
   # /users
-  resources :users, only: [:index, :show, :create] do
-    # GET /users/:user_id/sleep_records
-    get 'sleep_records', to: 'sleep_records#user_sleep_records' 
+  resources :users, only: [:index, :create] do
+    collection do
+      # GET /users/followings
+      get 'followings'
+      # GET /users/followers
+      get 'followers'
+    end
+    # /users/:id
+    member do
+      post 'follow'
+      delete 'unfollow'
+    end
   end
 
   # /sleep_records
