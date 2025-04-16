@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-    before_action :authenticate_user, only: [:followers, :followings, :follow] # required to login
+    before_action :authenticate_user, only: [:followers, :followings, :follow, :unfollow] # required to login
 
     def index
         pagination, users = pagy(User, items: params[:per_page] || 10, page: params[:per_page] || 1)
@@ -82,6 +82,27 @@ class UsersController < ApplicationController
             )
           
             render json: { message: "Now following #{user_to_follow.name}" }, status: :created
+        else
+            render json: { error: 'User not found' }, status: :not_found # not_found == http status code 404
+        end
+    end
+
+    def unfollow
+        user_to_unfollow = User.find_by(id: params[:id])
+
+        if user_to_unfollow.present?
+            following_relationship = current_user.following_relationships.find_by(followed: user_to_unfollow)
+
+            unless following_relationship
+                return render json: {
+                        message: "Can not Unfollow",
+                        error: "You never follow this User"
+                    }, status: :unprocessable_entity
+            end
+
+            following_relationship.destroy # delete relationship
+
+            return head :no_content
         else
             render json: { error: 'User not found' }, status: :not_found # not_found == http status code 404
         end
