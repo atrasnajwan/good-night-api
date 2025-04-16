@@ -1,4 +1,4 @@
-class ApplicationController < ActionController::Base
+class ApplicationController < ActionController::API
     include Pagy::Backend
 
     rescue_from ActionController::ParameterMissing, with: :handle_missing_params

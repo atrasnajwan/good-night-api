@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   
+  # /login
+  post '/login', to: 'sessions#login'
+
   # /users
   resources :users, only: [:index, :show, :create] do
     # GET /users/:user_id/sleep_records

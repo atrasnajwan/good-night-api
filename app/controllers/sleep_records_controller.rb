@@ -1,6 +1,4 @@
 class SleepRecordsController < ApplicationController
-    skip_before_action :verify_authenticity_token # to skip CSRF token verification
-
     def index
         pagination, sleep_records = pagy(SleepRecord, items: params[:per_page] || 10, page: params[:per_page] || 1)
 

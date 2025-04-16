@@ -111,6 +111,8 @@ GEM
     jbuilder (2.13.0)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    jwt (2.10.1)
+      base64
     logger (1.7.0)
     loofah (2.24.0)
       crass (~> 1.0.2)
@@ -236,6 +238,7 @@ DEPENDENCIES
   debug
   factory_bot_rails
   jbuilder
+  jwt
   pagy (~> 6.5.0)
   puma (>= 5.0)
   rails (~> 7.1.5, >= 7.1.5.1)
