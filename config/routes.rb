@@ -2,5 +2,5 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   
   # /users
-  resources :users, only: [:index, :show]
+  resources :users, only: [:index, :show, :create]
 end
