@@ -137,7 +137,7 @@ sh run_prod_server.sh      # Run the server on production env
 - Pagination (done)
 - Use serializer to show only desired attributes (done)
 - Add more test case
-- Use multithreading on Puma server (production) (done)
+- Use multithreading and worker on Puma server (production) (done)
 - Caching using Redis for some endpoints
 - Backgound jobs using Sidekiq to calculate analytics or report if needed
 - Setup Docker for easier deployment on production/staging
