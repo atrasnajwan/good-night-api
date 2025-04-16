@@ -122,21 +122,22 @@ rails db:seed           # Generate seed data
 bin/bundle exec rspec   # Run RSpec 
 
 rails s                 # Run the server (default: development)
+sh run_prod_server.sh      # Run the server on production env
 ```
 
 ## List to Improve
 - Database Indexing
     - Index on foreign key (followings.followed_id, followings.follower_id, sleep_records.user_id) (done)
     - Index on followings table to fast check unique records (done)
-    - Index on `sleep_records.created_at` because it often being used
-    - Index on `user.created_at` because it often being used when fetch followers/followings
+    - Index on `sleep_records.created_at` because it often being used (done)
+    - Index on `user.created_at` because it often being used when fetch followers/followings (done)
 - Add `sleep_duration` to new `sleep_records` table since `clocked_out_at` is only once being updated (done)
-- Using PostgreSQL to handle complex data relationships (e.g. users following other users, managing sleep records) and joins
+- Using PostgreSQL to handle complex data relationships (e.g. users following other users, managing sleep records) and joins (done)
 - Eager loading on some records (e.g. followings sleep records) (done)
 - Pagination (done)
 - Use serializer to show only desired attributes (done)
 - Add more test case
-- Use multithreading on Puma server
+- Use multithreading on Puma server (production) (done)
 - Caching using Redis for some endpoints
 - Backgound jobs using Sidekiq to calculate analytics or report if needed
 - Setup Docker for easier deployment on production/staging

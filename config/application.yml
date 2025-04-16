@@ -9,5 +9,8 @@ production:
   PG_USERNAME: ""
   PG_PASSWORD: ""
   PG_HOST: ""
+  RAILS_MIN_THREADS: "8" # min threads per worker
+  RAILS_MAX_THREADS: "16" # max threads per worker
+  WEB_CONCURRENCY: "6" # worker, maximum = your core count (cpu)
   
 
