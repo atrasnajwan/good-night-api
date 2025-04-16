@@ -1,4 +1,5 @@
 class SleepRecordsController < ApplicationController
+    before_action :authenticate_user, only: [:clock_in, :clock_out] # required to login
     def index
         pagination, sleep_records = pagy(SleepRecord, items: params[:per_page] || 10, page: params[:per_page] || 1)
 
@@ -17,7 +18,8 @@ class SleepRecordsController < ApplicationController
     end
 
     def clock_in
-        current_sleep = SleepRecord.find_by(user_id: clock_in_params[:user_id], clocked_out_at: nil)
+        # get sleep records from current/logged user
+        current_sleep = SleepRecord.find_by(user: current_user, clocked_out_at: nil)
         
         # can't clock in if not clocked out before
         if current_sleep.present?
@@ -26,7 +28,7 @@ class SleepRecordsController < ApplicationController
                 error: "You must clock out before clocking in again"
               }, status: :unprocessable_entity
         else
-            new_sleep_record = SleepRecord.new(clock_in_params)
+            new_sleep_record = SleepRecord.new(user: current_user, clocked_in_at: Time.now) # clock in with current time
     
             if new_sleep_record.save
                 render json: new_sleep_record, status: :created
@@ -52,18 +54,5 @@ class SleepRecordsController < ApplicationController
             }, status: :unprocessable_entity
         end
     end
-
-    private
     
-    # Example
-    # {
-    #     "sleep_record": { 
-    #         "user_id": 99
-    #     }
-    # }
-    def clock_in_params
-        params.required(:sleep_record)
-              .permit(:user_id)
-              .merge(clocked_in_at: Time.now) # merge current time to param clocked_in_at
-    end
 end
