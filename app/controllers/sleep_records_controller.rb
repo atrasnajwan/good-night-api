@@ -1,7 +1,13 @@
 class SleepRecordsController < ApplicationController
-    before_action :authenticate_user, only: [:clock_in, :clock_out] # required to login
+    before_action :authenticate_user, only: [:index, :clock_in, :clock_out] # required to login
+
     def index
-        pagination, sleep_records = pagy(SleepRecord, items: params[:per_page] || 10, page: params[:per_page] || 1)
+        # get sleep records from current/logged user
+        pagination, sleep_records = pagy(
+                                        current_user.sleep_records.order(created_at: :desc),
+                                        items: params[:per_page] || 10,
+                                        page: params[:per_page] || 1
+                                    )
 
         render json: {
             data: sleep_records,
