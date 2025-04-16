@@ -106,6 +106,18 @@ Represents a follower-followed relationship between users.
 
 ---
 
+### Commands
+
+```bash
+bundle install          # Install dependencies
+
+rails db:migrate        # Runs migrations
+rails db:seed           # Generate seed data
+bin/bundle exec rspec   # Run RSpec 
+
+rails s                 # Run the server (default: development)
+```
+
 ## List to Improve
 - Database Indexing
     - Index on foreign key (followings.followed_id, followings.follower_id, sleep_records.user_id) (done)
