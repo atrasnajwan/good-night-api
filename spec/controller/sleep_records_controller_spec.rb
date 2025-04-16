@@ -13,7 +13,7 @@ RSpec.describe SleepRecordsController, type: :request do
     }
   end
 
-  describe 'POST #clock_in' do
+  describe 'POST /sleep_records/clock_in' do
     context "when unauthorized" do
       it "returns 401" do
         post "/sleep_records/clock_in"
@@ -51,7 +51,7 @@ RSpec.describe SleepRecordsController, type: :request do
     end
   end
 
-  describe 'PATCH #clock_out' do
+  describe 'PATCH /sleep_records/clock_ou' do
     context "when unauthorized" do
       it "returns 401" do
         patch "/sleep_records/clock_out"

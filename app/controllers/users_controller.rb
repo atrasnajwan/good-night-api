@@ -57,8 +57,8 @@ class UsersController < ApplicationController
     end
 
     def follow
-        if params[:id] == current_user.id
-        return render json: {
+        if params[:id].to_i == current_user.id
+            return render json: {
                     message: "Can not follow",
                     error: "You can not follow yourself"
                 }, status: :unprocessable_entity
