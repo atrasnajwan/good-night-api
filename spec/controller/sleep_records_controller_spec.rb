@@ -1,10 +1,26 @@
 require 'rails_helper'
 
-RSpec.describe SleepRecordsController, type: :controller do
+RSpec.describe SleepRecordsController, type: :request do
   let(:user) { create(:user) } # create from FactoryBot
-  let(:valid_attributes) { { sleep_record: { user_id: user.id, clocked_in_at: Time.now } } }
+  let(:token) do # token for test logged user
+    payload = { user_id: user.id, exp: 24.hours.from_now.to_i }
+    JWT.encode(payload, JWT_SECRET_KEY)
+  end
+  let(:headers) do
+    {
+      "Authorization" => "Bearer #{token}",
+      "Content-Type" => "application/json"
+    }
+  end
 
   describe 'POST #clock_in' do
+    context "when unauthorized" do
+      it "returns 401" do
+        post "/sleep_records/clock_in"
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     # user is not allowed to clock in again before clocking out
     context 'when the user already has an active sleep record' do
       before do
@@ -13,7 +29,7 @@ RSpec.describe SleepRecordsController, type: :controller do
       end
 
       it 'returns an error' do
-        post :clock_in, params: valid_attributes # simulate http call
+        post "/sleep_records/clock_in", headers: headers # simulate http call
 
         expect(response).to have_http_status(:unprocessable_entity) # match http status code
         expect(JSON.parse(response.body)).to eq({ # match error message
@@ -26,7 +42,7 @@ RSpec.describe SleepRecordsController, type: :controller do
     context "when the user doesn't have an active sleep record" do
       it 'creates a new sleep record and returns a success' do
         expect {
-          post :clock_in, params: valid_attributes
+          post "/sleep_records/clock_in", headers: headers # simulate http call
         }.to change(SleepRecord, :count).by(1) # check if record is added by one
 
         expect(response).to have_http_status(:created)
@@ -35,15 +51,11 @@ RSpec.describe SleepRecordsController, type: :controller do
     end
   end
 
-  describe 'PATCH #:id/clock_out' do
-    context 'when the sleep record is not found' do
-      it 'returns a 404 error' do
-        post :clock_out, params: { id: -1 }
-
-        expect(response).to have_http_status(:not_found)
-        expect(JSON.parse(response.body)).to eq({
-          'error' => 'No active sleep record found'
-        })
+  describe 'PATCH #clock_out' do
+    context "when unauthorized" do
+      it "returns 401" do
+        patch "/sleep_records/clock_out"
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
@@ -55,15 +67,28 @@ RSpec.describe SleepRecordsController, type: :controller do
       end
 
       it 'returns an error' do
-        post :clock_out, params: { id: user.id } # simulate http call
+        patch "/sleep_records/clock_out", headers: headers # simulate http call
 
         expect(response).to have_http_status(:unprocessable_entity) # match http status code
         expect(JSON.parse(response.body)).to eq({ # match error message
-          'message' => 'Already clocked out',
-          'error' => "Can't clock out sleep that already clocked out"
+          'message' => "Already clocked out",
+          'error' => "Can't clock out sleep that you already clocked out"
         })
       end
     end
 
+    context "when the user have an active sleep record" do
+      before do
+        create(:sleep_record, user: user, clocked_in_at: Time.now, clocked_out_at: nil)
+      end
+
+      it 'update clock out time and returns a success' do
+        patch "/sleep_records/clock_out", headers: headers # simulate http call
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to have_key('clocked_out_at') # check if clocked_out_at key is returned on the response
+      end
+    end
   end
+
 end
