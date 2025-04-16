@@ -5,6 +5,8 @@ This app allows users to track when they go to bed and when they wake up. Users 
 See diagram [here](https://drive.google.com/file/d/1P-VDda2fN743ubPgNj_sBKheqnjpLOCA/view?usp=sharing)
 
 ## Database
+>Note:
+Make sure your PostgresSQL service is running and change the environment variable on config/application.yml
 
 ### **Users**
 | Column      | Type     | Description           |
@@ -111,6 +113,8 @@ Represents a follower-followed relationship between users.
 ```bash
 bundle install          # Install dependencies
 
+rails db:create         # Create db, will follow the configuration on database.yml
+rails db:drop           # [AWARE] Drop db, will follow the configuration on database.yml
 rails db:migrate        # Runs migrations
 rails db:seed           # Generate seed data
 bin/bundle exec rspec   # Run RSpec 
@@ -122,7 +126,7 @@ rails s                 # Run the server (default: development)
 - Database Indexing
     - Index on foreign key (followings.followed_id, followings.follower_id, sleep_records.user_id) (done)
     - Index on followings table to fast check unique records (done)
-- Calculate sleep_records duration on DB level (done)
+- Add sleep duration to new column since clocked_out_at is only once being updated
 - Using PostgreSQL to handle complex data relationships (e.g. users following other users, managing sleep records) and joins
 - Eager loading on some records (e.g. followings sleep records) (done)
 - Pagination (done)
