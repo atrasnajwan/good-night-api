@@ -39,18 +39,17 @@ class SleepRecordsController < ApplicationController
     end
 
     def clock_out
-        current_sleep = SleepRecord.find_by(id: params[:id])
+        # get un-clocked out sleep record from current/logged user
+        current_sleep = current_user.sleep_records.find_by(clocked_out_at: nil)
 
-        return render json: { error: 'No active sleep record found' }, status: :not_found unless current_sleep.present? # not_found == http status code 404
-        
-        unless current_sleep.clocked_out_at.present? # check if not already clocked out
+        if current_sleep.present?
             current_sleep.update!(clocked_out_at: Time.now)
 
             render json: current_sleep
         else
             render json: { 
                 message: "Already clocked out",    
-                error: "Can't clock out sleep that already clocked out"
+                error: "Can't clock out sleep that you already clocked out"
             }, status: :unprocessable_entity
         end
     end

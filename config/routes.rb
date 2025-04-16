@@ -11,11 +11,13 @@ Rails.application.routes.draw do
   end
 
   # /sleep_records
-  resources :sleep_records, only: [:index] do
-    # /sleep_records/:id/clock_out
-    patch 'clock_out', on: :member
+  resources :sleep_records, only: [:index]
+  
+  namespace :sleep_records do 
+    # /sleep_records/clock_in
+    post 'clock_in'
+    # /sleep_records/clock_out
+    patch 'clock_out'
   end
 
-  # POST /sleep_records
-  post '/sleep_records', to: 'sleep_records#clock_in'
 end
