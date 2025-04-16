@@ -1,0 +1,13 @@
+development:
+  PG_USERNAME: "your_postgres_username"
+  PG_PASSWORD: "your_postgres_password"
+
+test:
+  PG_PASSWORD: "your_postgres_password"
+
+production:
+  PG_USERNAME: ""
+  PG_PASSWORD: ""
+  PG_HOST: ""
+  
+
